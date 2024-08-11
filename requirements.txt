@@ -1,16 +1,14 @@
-<<<<<<< HEAD
+
 streamlit
 matplotlib
 seaborn
 urlextract
 wordcloud
 pandas
-=======
 streamlit
 matplotlib
 seaborn
 urlextract
 wordcloud
 pandas
->>>>>>> c3f45101aef7f6a6082b90bc762fe9d3a0cca54a
 emoji
