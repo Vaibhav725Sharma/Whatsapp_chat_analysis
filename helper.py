@@ -35,10 +35,10 @@ def most_busy_users(df):
         columns={'index': 'name', 'user': 'percent'})
     return x,df
 
-def create_wordcloud(selected_user,df):
-
+def create_wordcloud(selected_user, df):
     f = open('stop_hinglish.txt', 'r')
-    stop_words = f.read()
+    stop_words = f.read().splitlines()  # Split by lines to get a list of stop words
+    f.close()
 
     if selected_user != 'Overall':
         df = df[df['user'] == selected_user]
@@ -47,15 +47,18 @@ def create_wordcloud(selected_user,df):
     temp = temp[temp['message'] != '<Media omitted>\n']
 
     def remove_stop_words(message):
-        y = []
-        for word in message.lower().split():
-            if word not in stop_words:
-                y.append(word)
-        return " ".join(y)
+        words = message.lower().split()
+        filtered_words = [word for word in words if word not in stop_words]
+        return " ".join(filtered_words)
 
-    wc = WordCloud(width=500,height=500,min_font_size=10,background_color='white')
+    wc = WordCloud(width=500, height=500, min_font_size=10, background_color='white')
     temp['message'] = temp['message'].apply(remove_stop_words)
-    df_wc = wc.generate(temp['message'].str.cat(sep=" "))
+    text = temp['message'].str.cat(sep=" ")
+
+    if not text.strip():  # Check if the text is empty
+        return None  # Return None if no text is available
+
+    df_wc = wc.generate(text)
     return df_wc
 
 def most_common_words(selected_user,df):
@@ -79,16 +82,16 @@ def most_common_words(selected_user,df):
     most_common_df = pd.DataFrame(Counter(words).most_common(20))
     return most_common_df
 
-def emoji_helper(selected_user,df):
+
+def emoji_helper(selected_user, df):
     if selected_user != 'Overall':
         df = df[df['user'] == selected_user]
 
     emojis = []
     for message in df['message']:
-        emojis.extend([c for c in message if c in emoji.UNICODE_EMOJI['en']])
+        emojis.extend([c for c in message if c in emoji.EMOJI_DATA])
 
     emoji_df = pd.DataFrame(Counter(emojis).most_common(len(Counter(emojis))))
-
     return emoji_df
 
 def monthly_timeline(selected_user,df):
