@@ -1,15 +1,14 @@
-
 import re
 import pandas as pd
 
 def preprocess(data):
     pattern = r'\d{1,2}/\d{1,2}/\d{2,4},\s\d{1,2}:\d{2}\s[apAP][mM]\s-\s'
 
-    messages = re.split(pattern, data)[1:]
-    dates = re.findall(pattern, data)
+    messages = re.split(pattern, data)[1:]  # Split the messages
+    dates = re.findall(pattern, data)  # Find the corresponding dates
 
     df = pd.DataFrame({'user_message': messages, 'message_date': dates})
-    # convert message_date type
+    # Convert message_date type
     df['message_date'] = pd.to_datetime(df['message_date'], format='%d/%m/%y, %I:%M %p - ', errors='coerce', dayfirst=True)
 
     df.rename(columns={'message_date': 'date'}, inplace=True)
@@ -18,7 +17,7 @@ def preprocess(data):
     messages = []
     for message in df['user_message']:
         entry = re.split('([\w\W]+?):\s', message)
-        if entry[1:]:  # user name
+        if entry[1:]:  # If user name exists
             users.append(entry[1])
             messages.append(" ".join(entry[2:]))
         else:
@@ -49,3 +48,4 @@ def preprocess(data):
 
     df['period'] = period
 
+    return df
