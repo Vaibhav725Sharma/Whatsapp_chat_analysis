@@ -67,5 +67,6 @@ To run this app locally:
 
 3. streamlit run app.py
 
-Acknowledgments:-
+## Acknowledgments:-
+
 Thank you for checking out this project! Feel free to reach out if you have any questions or suggestions.
